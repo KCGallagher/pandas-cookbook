@@ -23,5 +23,6 @@ Course content
   <br>How to filter datasets and count occurrences.
 * [Chapter 4: Find out on which weekday people bike the most with groupby and aggregate](https://github.com/ben18785/pandas-cookbook/blob/master/problem_sets/Chapter%204%20-%20Find%20out%20on%20which%20weekday%20people%20bike%20the%20most%20with%20groupby%20and%20aggregate.ipynb)
   <br>How to do analyses at many levels using group_by and aggregate.
-* [Chapter 5: String operations! Which month was the snowiest?](https://github.com/ben18785/pandas-cookbook/blob/master/problem_sets/Chapter%206%20-%20String%20Operations-%20Which%20month%20was%20the%20snowiest.ipynb)
+* [Chapter 5: String operations! Which month was the snowiest?](https://github.com/ben18785/pandas-cookbook/blob/master/problem_sets/Chapter%205%20-%20String%20Operations%20-%20Which%20month%20was%20the%20snowiest.ipynb)
   <br>String and date processing are useful, and pandas has plenty of convenience functions.
+
