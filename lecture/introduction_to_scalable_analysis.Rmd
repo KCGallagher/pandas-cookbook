@@ -1,0 +1,246 @@
+---
+title: "Introduction to scalable and reproducible analysis"
+author: | 
+  | Ben Lambert
+output:
+  revealjs::revealjs_presentation:
+    theme: white
+    highlight: pygments
+    center: true
+    css: ['css/test.css','css/bootstrap.css']
+---
+
+## What will we cover today?
+- 9.30am-1pm: an introduction to scalable and reproducible analysis using pandas
+- 2pm-5.30pm: an introduction to scalable data visualisation with ggplot / plotnine
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message=FALSE)
+library(tidyverse)
+```
+
+---
+
+## Morning plan
+
+- Short lecture (this one)
+- Interactive "code along" session
+- Interspersed with "bonus" questions and breaks!
+
+## Afternoon plan
+
+- 2pm-2.30/40pm: lecture on grammar of graphics (in ggplot/plotnine)
+- Then onwards: problem sets
+
+## What today is not about
+
+How to write code that executes quickly
+
+## What is today about?
+
+Scalable and reproducible data analysis
+
+## What is scalable data analysis?
+
+- Scalability is *not* about code speed
+- It is about *useful analysis* speed: how long does the process of analysis take to arrive at a useful result?
+
+## What is scalable data analysis?
+
+- The process of data analysis is messy and inevitably full of errors and wrong turns
+- Speed of error discovery and correction is key
+- Agility of analysis framework also key
+- Software for scalable data analysis allows low marginal effort for increasingly complex analyses
+
+## What is reproducible data analysis?
+
+- Analyses that are reliable
+- Analyses that are reproducible
+- Analyses that are so expressive of intent that they are almost immediately understandable by others
+
+# An aside on code smells
+
+# Empathy and writing
+
+- Steven Pinker argues that empathy is key to good academic writing
+- Even if writing solo, you can reduce the empathy gap with readers
+- You can ask a future you if they understand what you mean
+- (Better) you can ask others if they understand
+
+# Empathy and coding
+
+- For others to be able to reproduce or replicate what you've done, they have to understand it
+- Writing understandable code also makes it less likely to be buggy
+- Empathy with future users is hence key to writing good code
+
+# Empathy and coding
+
+Reduce the empathy gap by:
+
+- Refactoring relentlessly as future you re-encounters code
+- Code collaboratively
+- Being aware of good and bad coding practices
+
+# Good and bad code
+
+There are many ways to write good software.
+
+There are fewer ways to write bad software.
+
+*Code smells* are recognised patterns of code likely to hinder understanding and make it hard to work with.
+
+Code smells are actually named (Fowler, 2000).
+
+# Which is not a real code smell?
+
+- Long Parameter List
+- Duplicated Code
+- Global Data
+- Large Class
+- Feature Envy
+- Inappropriate Intimacy
+- Angry Lovers
+- Freeloader
+
+# Why learn how to smell?
+
+Code smells have well-defined remedies.
+
+Learning to classify code as whiffing of a particular odour means you can apply these.
+
+# What is this function about ?
+
+```r
+model <- function(start, stop, stoc, spec, dens,
+                  b, i_mat, i_dur, ntype, ncov)
+{
+  # function's body
+}
+```
+
+# Change names to convey meaning
+
+```r
+simulate <- function(time_start, time_stop, is_stochastic,
+                     mosquito_species, mosquito_density,
+                     mosquito_to_human_prob, immunity_maternal,
+                     immunity_duration, net_type, net_coverage)
+{
+  # function's body
+}
+```
+
+# Tip # 1
+
+"Have you met my good friend 'bSty_1800'?"
+
+Use descriptive variable names
+
+# Long method smell
+
+A long method is simply one with many lines of code. "Generally, any method longer than ten lines should make you start asking questions", **Refactoring Guru**.
+
+Why do they occur?
+
+
+- It's easier to write code than it is to read it
+- When new functionality is required, it can feel easier to add to existing methods rather than create new ones
+
+# What problems do they cause?
+
+The longer a function is
+
+- The harder it is to understand it
+- The harder it is to maintain
+- The harder it is to test
+- The more likely it will contain duplicate code
+
+# Where to find out more
+
+- *Code Smells and Feels*, Jenny Byran, useR 2018
+- Martin Fowler, Kent Beck *Refactoring, 2nd edition* (Esp chapter 3)
+- "Better Codehub" badges on Github: semi-automated checking of software
+
+# Software for scalable and reproducible analysis
+
+```{r, echo = FALSE, out.width = "200px",include=T,fig.align="center"} 
+  knitr::include_graphics("figures/tidyverse.png")
+```
+
+```{r, echo = FALSE, out.width = "300px",include=T,fig.align="center"} 
+  knitr::include_graphics("figures/pandas.png")
+```
+
+# Both use dataframes
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+library(kableExtra)
+df <- read.csv("data/master.csv") %>% 
+  mutate(age=fct_relevel(age,
+                         "5-14 years",
+                         "15-24 years",
+                         "25-34 years",
+                         "35-54 years",
+                         "55-74 years",
+                         "75+ years"))
+df_sum <- df %>% 
+  group_by(country) %>% 
+  summarise(suicides.100k.pop=mean(suicides.100k.pop)) %>% 
+  arrange(suicides.100k.pop) %>% 
+  filter(suicides.100k.pop > 0)
+df_sum <- df_sum[c(10:10, 40:41, 98:99), ]
+countries <- df_sum$country
+df <- df %>% 
+  filter(country %in% countries) %>% 
+  select(country, year, age, sex, suicides_no, population)
+
+kable(df[1:100, ],format="html",escape = F, col.names = colnames(df)) %>% 
+  kable_styling() %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+# Task
+
+Keep only female rows and select only the country, year, sex and suicide count columns
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+# subset
+df_temp <- df %>% 
+  filter(sex == 'female') %>% 
+  select(country, year, sex, suicides_no)
+# print
+kable(df_temp[1:100, ],format="html",escape = F) %>% 
+  kable_styling() %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+# Tidyverse
+
+```r
+df %>% 
+  filter(sex == 'female') %>% 
+  select(country, year, sex, suicides_no)
+```
+
+# Pandas
+
+```python
+df_1 = df[df['sex' == 'female']]
+df_1[['year', 'country', 'sex', 'suicides_no']]
+```
+
+# What will you not learn today?
+
+Everything about pandas and ggplot/plotnine
+
+# What will you learn today?
+
+- Importance of empathetic coding
+- Increased analysis speed and quality (with practice)
+- Where to look for more information
+
+# Further material
+
+- "R for data science" by Grolemund and Wickham
+- "Python for data analysis" by McKinney
+
